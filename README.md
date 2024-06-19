@@ -1,4 +1,4 @@
-# 3cbdscripts
+# 3cbscripts
 A small collection of minimax algorithms for tricky 3CardBlind matchups.
 
 Hangarback Walkers:
