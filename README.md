@@ -1,7 +1,7 @@
 # 3cbscripts
 A small collection of minimax algorithms for tricky 3CardBlind matchups.
 
-#Hangarback Walkers:
+# Hangarback Walkers:
 
 ![HBW](https://cards.scryfall.io/small/front/2/d/2d2c323f-eecd-4560-a128-ab513d231552.jpg?1690005486)
 ![HBW](https://cards.scryfall.io/small/front/2/d/2d2c323f-eecd-4560-a128-ab513d231552.jpg?1690005486)
@@ -11,7 +11,7 @@ A small collection of minimax algorithms for tricky 3CardBlind matchups.
 ![Elixir](https://cards.scryfall.io/small/front/6/7/6741ab27-9e1f-4aa5-96b9-b450eda7c5c2.jpg?1625978606)
 ![Land](https://cards.scryfall.io/small/front/7/1/71624139-a255-48be-93ca-594a4beba487.jpg?1562429861)
 
-#Ocelot Ascendancy:
+# Ocelot Ascendancy:
 
 ![Ocelot Pride](https://cards.scryfall.io/small/front/8/9/89cf6f57-230f-497e-a14e-ad1e8737fd42.jpg?1717011506)
 ![Fountain](https://cards.scryfall.io/small/front/2/6/26894980-8961-4479-85dd-5f01c899718b.jpg?1562300814)
