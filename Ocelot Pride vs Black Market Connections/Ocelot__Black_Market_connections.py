@@ -84,12 +84,13 @@ def blocksAndDamage(state, stateString, dependencies):
               newState[4] -= dblblk + chump
               newState[5] -= int(float(dblblk / 2))
               newState[2] -= int(float(3 * newState[5]))
-              if newState[4] == 0: #using the ocelot as the last blocker
-                  newState[2] += 1
-                  newState[10] = 0
-              if newState[2] == 0 and state[10] == 1: #If ocelot is relevant when forced to block
-                  newState[2] = 1
-                  newState[10] = 0
+              if newState[10] == 1: #edit: if ocelot can block
+                  if newState[4] == 0: #using the ocelot as the last blocker
+                      newState[2] += 1
+                      newState[10] = 0
+                  elif newState[2] == 0: #If ocelot is relevant when forced to block
+                      newState[2] = 1
+                      newState[10] = 0
               setDependencies(stateString, newStateString(newState), dependencies)
     return
 
@@ -168,7 +169,7 @@ def setDependencies(oldStateString, newStateString, dependencies):
 if __name__ == "__main__":
     starting_string = "A,S,21,19,2,0,2,0,0,0,1"
     #starting_string = "A,S,20,20,1,0,2,0,0,0,1" #BMC goes first
-    out = extend_search(starting_string, 50)
+    out = extend_search(starting_string, 100)
     print(out)
     '''
     f = open("out.txt", "w")
