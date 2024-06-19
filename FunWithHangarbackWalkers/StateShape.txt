@@ -1,0 +1,43 @@
+0 - Who's turn / next
+1 - What phase is next
+A
+2 - A-life
+3 - A-land
+4 - A-walker
+5 - A-walkersize
+i
+6 - A-walkerdamage
+7 - A-elixir
+iii
+8 - A-untappedthopters
+iiii
+9 - A-tappedthopters
+10- B-life
+11- B-land
+12- B-walker1
+13- B-walker1size
+i
+14- B-walker1damage
+15- B-walker2
+16- B-walker2size
+ii
+17- B-walker2damage
+iii
+18- B-untappedthopters
+iiii
+19- B-tappedthopters
+
+Blocking states
+20- thopblockthop
+21- walker1attacking
+22- walkerblockingthatwalker
+23- otherwalkerblockingthatwalker
+24- numberofthoptersblocking
+25- walking2attacking
+26- walkerblockingthatwalker
+27- numberofthoptersblocking
+
+Winning
+28- Who makes the choice in the next phase
+29- Who won
+30- blockingOrder
