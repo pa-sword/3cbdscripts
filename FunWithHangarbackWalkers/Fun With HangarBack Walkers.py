@@ -21,71 +21,8 @@
 # When the program is running, state is a list which contains the state as individual pieces of information
 # Dependencies is a dictionary with condensed versions of the state pointing to a list of other states.
 # For example, if dependencies says: "Aa20TG0iHii20iii0" #TODO
-"""
-max_depth = 100 #50 turns
-def perform(state, dependencies):
 
-    if state[0] == "Au":
-        if state[3] == "G" and state[6] == "U" and state[2] == "U":
-            # Always
-            action("T", "Ae", state, dependencies) #Crack elixir on upkeep
-        action("M", "Ac") # Move to combat... Handle combat seperately TODO
-    # if  state[0] == "Aa":
-    #     # Choose number of attackers <= untapped thopters + untapped walkers
-    #     # Maybe
-    #     # if state[3] == "U":
-    #         # Maybe attack
-    #         # walker_attack = ??? # Start with attack / aggression
-    #     # else:
-    #     #     walker_attack = False
-    #     # thopter_attack_count = ??? # Count down from maximum number of attacks
-    #     action("A", "Ac", state, dependencies) #TODO
-    #     action("M", "Ab") #Move to blockers
-    # if state[0] == "Ab":
-    #     # Choose number of blockers <= untapped thopters + untapped walkers
-    #     # Choose how blocks occur
-    #     action("B", ???, state, dependencies)
-        action("M", "Am")
-    if state[0] == "Am":
-        if state[6] == "H" and state[3] == "U" and state[2] == "U":
-            # Maybe
-            action("P", "Ae", state, dependencies) #Play elixir and tap walker
-            action("T", "Aw", state, dependencies)
-        if state[6] == "H" and state[3] == "D" and state[2] == "U":
-            # Always
-            action("P", "Ae", state, dependencies)
-        if state[6] == "U":
-            # Maybe
-            action("P", "Ae", state, dependencies)
-        # if state[6] == "U" and state[3] == 
-        action("M", "Bc", state, dependencies) #Move to combat ... Handle combat seperatley TODO
-    # if state[0] == "Ba":
-    #     # Choose number of attackers <= untapped thopters + untapped walkers
-    #     # Maybe
-    #     if state[11] == "U":
-    #         # Maybe attack
-    #         walker_1_attack = ??? # Start with attack / aggression
-    #     else:
-    #         walker_1_attack = False
-    #     if state[14] == "U":
-    #         # Maybe attack
-    #         walker_2_attack = ??? # Start with attack / aggression
-    #     else:
-    #         walker_2_attack = False
-    #     thopter_attack_count = ??? # Count down from maximum number of attacks
-    #     action("A", ???, state, dependencies) #TODO
-    #     action("M", "Ab") #Move to blockers
-    # if state[0] == "Bb":
-    #     # Choose number of blockers <= untapped thopters + untapped walkers
-    #     # Choose how blocks occur
-    #     action("B", ???, state, dependencies)
-        action("M", "Bm")
-
-
-
-def action(action, withwhat, state, dependencies):
-    if action == "P":
-"""
+#~~
 
 # New model:
 # Start game, choose start player
@@ -166,7 +103,7 @@ def blocks(state, stateString, dependencies): #V2
         state[21] = walker1attack
         state[25] = walker2attack
         if walker1attack > 0:
-            if state[8] >= 1: # A blocks with 1 thopter
+            if state[8] >= 1: # A blocks *walker1attack* with 1 thopter
                 newState = state.copy()
                 newState[24] = 1
                 for thopblock in range(min(state[19], state[8] - 1), -1, -1):
@@ -290,14 +227,14 @@ def blocks(state, stateString, dependencies): #V2
                     if state[5] + state[8] >= walker1attack + walker2attack and walker1attack > 1: # Additionally, kill other walker with thopters
                         newState[24] = walker1attack
                         setDependencies(stateString, newStateString(newState), dependencies)
-        if state[18] > 0 and walker1attack == 0 and walker2attack == 0:
+        if state[19] > 0 and walker1attack == 0 and walker2attack == 0: #flag; 18->19 attacks, not blocks
             newState = state.copy()
             for thopblock in range(min(state[19], state[8]), -1, -1):
                 newState[20] = thopblock
                 setDependencies(stateString, newStateString(newState), dependencies)
         #TODO Is this all of the cases? ^^
     if state[0] == "A":
-        state[28] = "T" # Damage assignment
+        state[28] = "A" # Damage assignment FLAG; "T"
         walker1attack = int(state[4] == "T") * state[5]
         state[21] = walker1attack
         if walker1attack > 0:
@@ -358,7 +295,7 @@ def blocks(state, stateString, dependencies): #V2
                 newState[22] = state[13]
                 newState[23] = state[16]
                 setDependencies(stateString, newStateString(newState), dependencies)
-        if state[18] > 0 and walker1attack == 0 and walker2attack == 0:
+        if state[9] > 0 and walker1attack == 0: #flag; 18->9 walker2 redundant
             newState = state.copy()
             for thopblock in range(min(state[9], state[18]), -1, -1):
                 newState[20] = thopblock
@@ -407,10 +344,10 @@ def beforedamage(state, stateString, dependencies): # V2
                 newState = state.copy()
                 newState[4] = "T"
                 newState[5] += 1
-                if state[22] > 0:
+                if state[22] > 0: #FLAG; walkerblocking walker indicates size apparently
                     newState[22] += 1
-                if state[26] > 0:
-                    newState[26] += 1                    
+                if state[26] > 0: #flag whay are both wbws incremented?
+                    newState[26] += 1
                 setDependencies(stateString, newStateString(newState), dependencies)
             if state[7] == "U":
                 newState = state.copy()
@@ -469,12 +406,12 @@ def damageAssignment(state, stateString, dependencies): # V2 TODO double check e
                     state[14] = state[21]
                 if state[23] > 0:
                     state[17] = state[21]
-                if state[24] > 0:
-                    state[18] -= min(state[21], state[24])
+                #if state[24] > 0:
+                #    state[18] -= min(state[21], state[24]) #flag; assignment, not destruction
                 state[30] = 0
                 setDependencies(stateString, newStateString(state), dependencies)
         elif 3 > state[30] > 0:
-            newState[6] = state[22] + state[23]
+            state[6] = state[22] + state[23] #flag newstate->state
             if state[21] >= state[22] + state[23]:
                 newState = state.copy()
                 newState[14] = state[13]
@@ -495,16 +432,16 @@ def damageAssignment(state, stateString, dependencies): # V2 TODO double check e
             newState = state.copy()
             if state[22] > 0:
                 newState[14] = state[21]
-                newState[18] -= max(min(state[21] - state[13], state[24]), 0)
+                #newState[18] -= max(min(state[21] - state[13], state[24]), 0)
             elif state[23] > 0:
                 newState[17] = state[21]
-                newState[18] -= max(min(state[21] - state[16], state[24]), 0)
+                #newState[18] -= max(min(state[21] - state[16], state[24]), 0)
             newState[30] = 0
             setDependencies(stateString, newStateString(newState), dependencies)
         if state[30] == 4:
             # Only take out thopters
             newState = state.copy()
-            newState[18] -= min(state[21], state[24])
+            #newState[18] -= min(state[21], state[24])
             newState[30] = 0
             setDependencies(stateString, newStateString(newState), dependencies)
         if state[30] == 5:
@@ -515,17 +452,17 @@ def damageAssignment(state, stateString, dependencies): # V2 TODO double check e
                 numThopters = state[21] - state[22] + (state[12] == "T")
             if state[23] > 0:
                 numThopters = state[21] - state[23] + (state[15] == "T")
-            newState[18] -= min(numThopters, state[24])
+            #newState[18] -= min(numThopters, state[24])
             newState[30] = 0
             setDependencies(stateString, newStateString(newState), dependencies)
             if ((state[22] > 0 and state[12] == "U") or (state[23] > 0 and state[15] == "U")) and state[21] < state[22] + state[23] + state[24]:
                 newState = state.copy()
                 if state[22] > 0:
                     newState[14] = state[21]
-                    newState[18] -= max(min(state[21] - state[13], state[24]), 0)
+                    #newState[18] -= max(min(state[21] - state[13], state[24]), 0)
                 elif state[23] > 0:
                     newState[17] = state[21]
-                    newState[18] -= max(min(state[21] - state[16], state[24]), 0)
+                    #newState[18] -= max(min(state[21] - state[16], state[24]), 0)
                 newState[30] = 0
                 setDependencies(stateString, newStateString(newState), dependencies)
         if state[30] == 6:
@@ -536,7 +473,7 @@ def damageAssignment(state, stateString, dependencies): # V2 TODO double check e
                 numThopters = state[21] - state[22] - (state[12] == "U")
             if state[23] > 0:
                 numThopters = state[21] - state[23] - (state[15] == "U")
-            newState[18] -= min(numThopters, state[24])
+            #newState[18] -= min(numThopters, state[24])
             newState[30] = 0
             setDependencies(stateString, newStateString(newState), dependencies)
     if state[0] == "B":
@@ -548,36 +485,38 @@ def damageAssignment(state, stateString, dependencies): # V2 TODO double check e
                 state[14] = state[22] + state[24]
                 if state[22] > 0:
                     state[6] = state[21]
-                if state[24] > 0:
-                    state[8] -= min(state[21], state[24])
-            if state[25] > 0:
-                state[17] = state[26] + state[27]
-                if state[26] > 0:
-                    state[6] = state[21]
-                if state[27] > 0:
-                    state[8] -= min(state[25], state[27])
+                #if state[24] > 0:
+                #    state[8] -= min(state[21], state[24])
+            if state[25] > 0: #walker 2 attacking
+                state[17] = state[26] + state[27] #wb2damage = wbw2+tbw2
+                if state[26] > 0: #A walker is blocking w2
+                    #state[6] = state[21] #A walker damage is w1a? flag; wrong assignment
+                    state[6] = min(state[26],state[25])
+                #if state[27] > 0: #thopters blocking w2
+                #    state[8] -= #min(state[25], state[27]) #A thopters die to w2a or ntb? flag
+                #    state[8] -= max(state[25]-state[26],0) #should be assignment, not damage
                 state[30] = 0
                 setDependencies(stateString, newStateString(state), dependencies)
         elif state[30] == 3 or state[30] == 6:
             newState = state.copy()
             if state[22] > 0:
                 newState[6] = state[21]
-                newState[8] -= max(min(state[21] - state[5], state[24]), 0)
+                #newState[8] -= max(min(state[21] - state[5], state[24]), 0)
             elif state[26] > 0:
                 newState[6] = state[25]
-                newState[8] -= max(min(state[25] - state[5], state[27]), 0)
+                #newState[8] -= max(min(state[25] - state[5], state[27]), 0)
             newState[30] = 0
             setDependencies(stateString, newStateString(newState), dependencies)
         if state[22] > 0 and state[21] >= state[22] + state[24]:
             newState = state.copy()
             newState[6] = state[5]
-            newState[8] -= state[24]
+            #newState[8] -= state[24]
             newState[30] = 0
             setDependencies(stateString, newStateString(newState), dependencies)
         if state[26] > 0 and state[25] > state[26] + state[27]:
             newState = state.copy()
             newState[6] = state[5]
-            newState[8] -= state[27]
+            #newState[8] -= state[27]
             newState[30] = 0
             setDependencies(stateString, newStateString(newState), dependencies)
         if state[30] == 4:
@@ -590,7 +529,7 @@ def damageAssignment(state, stateString, dependencies): # V2 TODO double check e
             if state[26] > 0:
                 numThopters = state[27]
                 attack = state[25]
-            newState[8] -= min(attack, numThopters)
+            #newState[8] -= min(attack, numThopters)
             newState[30] = 0
             setDependencies(stateString, newStateString(newState), dependencies)
         if state[30] == 5:
@@ -603,17 +542,17 @@ def damageAssignment(state, stateString, dependencies): # V2 TODO double check e
             if state[26] > 0:
                 numThopters = state[25] - state[26] + (state[4] == "T")
                 minThopters = state[27]
-            newState[8] -= min(numThopters, minThopters)
+            #newState[8] -= min(numThopters, minThopters)
             newState[30] = 0
             setDependencies(stateString, newStateString(newState), dependencies)
             if state[4] == "U" and ((state[22] > 0 and state[21] < state[22] + state[24]) or (state[26] > 0 and state[25] < state[26] + state[27])):
                 newState = state.copy()
                 if state[22] > 0:
                     newState[6] = state[21]
-                    newState[8] -= max(min(state[21] - state[5], state[24]), 0)
+                    #newState[8] -= max(min(state[21] - state[5], state[24]), 0)
                 elif state[23] > 0:
                     newState[6] = state[25]
-                    newState[8] -= max(min(state[25] - state[5], state[27]), 0)
+                    #newState[8] -= max(min(state[25] - state[5], state[27]), 0)
                 newState[30] = 0
                 setDependencies(stateString, newStateString(newState), dependencies)
         if state[30] == 6:
@@ -626,7 +565,7 @@ def damageAssignment(state, stateString, dependencies): # V2 TODO double check e
             if state[26] > 0:
                 numThopters = state[25] - state[26] - (state[4] == "U")
                 minThopters = state[27]
-            newState[18] -= min(numThopters, state[27])
+            #newState[18] -= min(numThopters, state[27])
             newState[30] = 0
             setDependencies(stateString, newStateString(newState), dependencies)
     return
@@ -636,7 +575,7 @@ def resolvecombat(state, stateString, dependencies): #V2
     if (state[4] == "U" or state[4] == "T") and state[6] >= state[5]:
         state[4] = "G"
         state[8] += state[5]
-        state[5] = 0
+        state[5] = 0 #somebody flag, state[6]?
     if (state[12] == "U" or state[12] == "T") and state[14] >= state[13]:
         state[12] = "G"
         state[18] += state[13]
@@ -649,20 +588,22 @@ def resolvecombat(state, stateString, dependencies): #V2
         state[17] = 0
     if state[0] == "A":
         state[28] = "A"
-        state[9] -= state[20]
-        state[18] -= state[24]
-        state[18] -= state[20]
-        state[10] -= state[9]
-        if state[21] > 0 and state[22] == 0 and state[23] == 0 and state[24] == 0:
-            state[10] -= state[5]
+        state[9] -= state[20] #A tapped thop - tbt
+        state[18] -= state[20] #B untapped - tbt
+        state[18] -= min(state[24],state[5]) #B untapped - ntbw1 FLAG; walkersize damage limit
+        state[10] -= state[9] #B life - A tapped thop, state[9] = 0, elixir/tapping failed for some reason
+        if state[21] > 0 and state[22] == 0 and state[23] == 0 and state[24] == 0: #walker1 unblocked
+            state[10] -= state[5] #condition not met
     if state[0] == "B":
         state[28] = "B"
-        state[19] -= state[20]
-        state[19] -= state[24]
-        state[19] -= state[27]
-        state[8] -= state[20]
-        state[2] -= state[19]
-        if state[21] > 0 and state[22] == 0 and state[23] == 0 and state[24] == 0:
+        state[19] -= state[20] #B tapped thop - tbt
+        state[8] -= state[20] #A untapped thop - tbt
+        #state[19] -= state[24] #B tapped thop - ntbw1 FLAG; 19?
+        state[8] -= min(state[24],state[21])
+        #state[19] -= state[27] #B tapped thop - ntbw2 FLAG; 19?
+        state[8] -= min(state[27],state[25])
+        state[2] -= state[19] #A life - B tapped thop
+        if state[21] > 0 and state[22] == 0 and state[23] == 0 and state[24] == 0: #somebody FLAG, 23 is redundant
             state[2] -= state[13]
         if state[25] > 0 and state[26] == 0 and state[27] == 0:
             state[2] -= state[16]
@@ -736,24 +677,22 @@ def endstep(state, stateString, dependencies): # V2
     state[1] = "S" # For start of turn 
     if state[0] == "B":
         state[28] = "A"
+        state[0] = "A" #FLAG; removed from conditionals
         if state[3] == "U":
             if state[4] == "U":
                 newState = state.copy()
                 newState[3] = "T"
                 newState[4] = "T"
                 newState[5] += 1
-                newState[0] = "A"
                 setDependencies(stateString, newStateString(newState), dependencies)
             if state[7] == "U":
                 newState = state.copy()
-                if state[4] == "G":
+                if newState[4] == "G": #flag changed to newstate
                     instantelixir(stateString, newState, "S", dependencies) #TODO edge case where B gets to make a decision
-                else:
-                    newState[0] = "A"
-                    newState[7] = "D"
+                else: #B's end step. A's land and elixir are untapped. A's walker is not in the grave.
+                    newState[2] += 5 #flag; added line for elixir life
+                    newState[7] = "D" #Elixir activation at B's EOT
                     setDependencies(stateString, newStateString(newState), dependencies)
-            else:
-                state[0] = "A"
     elif state[0] == "A":
         state[28] = "B"
         state[0] = "B"
@@ -834,64 +773,16 @@ def extend_search(initialStateString, depth):
     search_strings = [initialStateString]
     for iter in range(depth):
         new_search_strings = []
-        new_search_strings = list(dict.fromkeys(new_search_strings))
         for string in search_strings:
             new_search_strings.extend(playPhase(string, dependencies))
+        new_search_strings = list(dict.fromkeys(new_search_strings)) #somebody *fixed
         search_strings = new_search_strings
     return dependencies
 
 def reverse_search():
     pass #TODO
 
-"""
-def playphase(state, dependencies):
-    if state[1] == "S":
-        if state[4] == "G" and state[7] == "U" and state[0] == "B":
-            newState1 = startturn(state.copy(), 0)
-            newState1[1] = "A"
-            dependencies[state].append(newState1) #TODO before appending, make the state into a string for storage / condense
-            newState2 = startturn(state.copy(), 1)
-            newState2[1] = "A"
-            dependencies[state].append(newState2)
-        else:
-            newState = startturn(state.copy(), -1)
-            newState[1] = "A"
-            dependencies[state].append(newState)
-        #TODO save dependencies table
-    if state[1] == "M":
-        if state[0] == "A" and state[3] == "U": #A's second main and has mana
-            if state[4] == "H" and state[7] == "H": #A has both cards in hand
-                newState1 = secondmain(state.copy(), 1)
-                newState1[1] = "E"
-                dependencies[state].append(newState1)
-                newState2 = secondmain(state.copy(), 2)
-                newState2[1] = "E"
-                dependencies[state].append(newState2)
-                #TODO return
-            if state[4] == "H": #A has walker in hand, but not elixir
-                newState1 = secondmain(state.copy(), 1)
-                newState1[1] = "E"
-                dependencies[state].append(newState1)
-                newState2 = secondmain(state.copy(), 0)
-                newState2[1] = "E"
-                dependencies[state].append(newState2)
-            if state[4] == "U" and state[7] == "H": #A has untapped walker and elixir in hand
-                newState1 = secondmain(state.copy(), 3)
-                newState1[1] = "E"
-                dependencies[state].append(newState1)
-                newState2 = secondmain(state.copy(), 2)
-                newState2[1] = "E"
-                dependencies[state].append(newState2)
-            if state[7] == "H": #A has elixir in hand but walker is tapped or not on board
-                newState1 = secondmain(state.copy(), 2)
-                newState1[1] = "E"
-                dependencies[state].append(newState1)
-                newState2 = secondmain(state.copy(), 0)
-                newState2[1] = "E"
-                dependencies[state].append(newState2)
-        if state[0] == "B":
-            pass
-"""
+#~~
 
 def newStateString(state):
     stateString = f'{state[0]},{state[1]},{state[2]},{state[3]},{state[4]},{state[5]},\
@@ -927,6 +818,14 @@ def readStateString(stateString):
     return state
 
 def setDependencies(oldStateString, newStateString, dependencies):
+    '''
+    if newStateString == "A,C,20,U,T,2,0,H,0,0,20,T,U,1,0,G,0,0,0,0,0,2,1,0,1,0,0,0,A,U,0":
+        #A,M,20,U,T,2,0,H,0,0,20,T,U,1,0,G,0,0,-1,0,0,0,0,0,0,0,0,0,A,U,0 negative thops
+        #A,C,20,U,T,2,1,H,0,0,20,T,U,1,0,G,0,0,0,0,0,2,0,0,1,0,0,0,A,U,0 untapped thop went missing
+        #A,C,20,U,T,2,0,H,0,0,20,T,U,1,0,G,0,0,0,0,0,2,1,0,1,0,0,0,A,U,0 thop missing, damage missing
+        print(oldStateString)
+        print(newStateString)
+    '''
     if newStateString not in dependencies:
         dependencies[newStateString] = []
     if newStateString not in dependencies[oldStateString]:
@@ -945,12 +844,18 @@ if __name__ == "__main__":
     # testB = newStateString(testA1)
     # print(testB)
     # print(testA == testB)
+    #starting_string = "B,D,20,T,G,0,0,H,1,0,20,U,G,0,0,T,1,0,0,1,0,0,0,0,0,1,0,1,B,U,0" #[8]=-1 bugtest
     starting_string = "A,S,20,U,H,0,0,H,0,0,20,U,H,0,0,H,0,0,0,0,0,0,0,0,0,0,0,0,A,U,0"
-    # dependencies = {starting_string: []}
+    #dependencies = {starting_string: []}
     # playPhase(starting_string, dependencies)
     # print(dependencies)
-    out = extend_search(starting_string, 100)
-    # print(out)
+    out = extend_search(starting_string, 50)
+    #print(out)
+#    '''
+    f = open("out.txt", "w")
+    f.write(str(out))
+    f.close()
+#    '''
 
 #TODO each state actually needs to know what state is next, not what state just passed.
 #This is because some abnormal states (instant elixir and damage assignment)
