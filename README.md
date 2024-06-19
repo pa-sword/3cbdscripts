@@ -2,6 +2,7 @@
 A small collection of minimax algorithms for tricky 3CardBlind matchups.
 
 Hangarback Walkers:
+
 ![HBW](https://cards.scryfall.io/normal/front/2/d/2d2c323f-eecd-4560-a128-ab513d231552.jpg?1690005486)
 ![HBW](https://cards.scryfall.io/normal/front/2/d/2d2c323f-eecd-4560-a128-ab513d231552.jpg?1690005486)
 ![Land](https://cards.scryfall.io/normal/front/7/1/71624139-a255-48be-93ca-594a4beba487.jpg?1562429861)
