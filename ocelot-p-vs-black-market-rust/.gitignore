@@ -1,0 +1,4 @@
+# git ignore for the rust project
+/target
+
+Cargo.lock
