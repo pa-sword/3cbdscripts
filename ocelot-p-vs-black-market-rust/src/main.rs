@@ -371,10 +371,6 @@ impl State {
             return Player::BMC
         }
 
-        if self.city_blessing {
-            return Player::OP;
-        }
-
         if self.turn_count > 17 {
             return Player::BMC
         }
